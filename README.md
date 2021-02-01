@@ -2,6 +2,12 @@
 
 A prototype of the recipe app for the google solution challenge.
 
+## Contributors
+* Adeet Patel
+* Srujan Joshi
+* Grant Dong
+* Hunter Vaccaro
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
