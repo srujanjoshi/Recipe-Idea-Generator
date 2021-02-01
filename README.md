@@ -1,4 +1,4 @@
-# recipic
+# Recipe Idea Generator App
 
 A prototype of the recipe app for the google solution challenge.
 
