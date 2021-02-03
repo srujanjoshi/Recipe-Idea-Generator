@@ -22,6 +22,15 @@ class _SignInState extends State<SignIn> {
   String password = '';
   String error = '';
 
+  RaisedButton forgotPasswordButton = RaisedButton(
+      child: Text(
+          "Forgot Password",
+          style: TextStyle(color: Colors.white)
+      ),
+      color: Colors.grey[800],
+      onPressed: () {},
+  );
+
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : Scaffold(
@@ -64,24 +73,30 @@ class _SignInState extends State<SignIn> {
                   }
               ),
               SizedBox(height: 20),
-              RaisedButton(
-                color: Colors.grey[800],
-                child: Text(
-                  'Sign In',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  if (_formKey.currentState.validate()){
-                    setState(() => loading = true);
-                    dynamic result = await _auth.signInWithEmailAndPassword(email, password);
-                    if(result == null) {
-                      setState(() {
-                        error = 'could not sign in with those credentials';
-                        loading = false;
-                      });
-                    }
-                  }
-                },
+              Row(
+                children: [
+                  RaisedButton(
+                    color: Colors.grey[800],
+                    child: Text(
+                      'Sign In',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()){
+                        setState(() => loading = true);
+                        dynamic result = await _auth.signInWithEmailAndPassword(email, password);
+                        if(result == null) {
+                          setState(() {
+                            error = 'could not sign in with those credentials';
+                            loading = false;
+                          });
+                        }
+                      }
+                    },
+                  ),
+                  SizedBox(width: 10),
+                  forgotPasswordButton
+                ],
               ),
               SizedBox(height: 12),
               Text(
