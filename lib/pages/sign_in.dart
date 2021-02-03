@@ -74,6 +74,7 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RaisedButton(
                     color: Colors.grey[800],
