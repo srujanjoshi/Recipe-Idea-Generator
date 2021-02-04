@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipic/pages/forgot_password.dart';
+import 'package:recipic/pages/register.dart';
 import 'package:recipic/services/auth.dart';
 import 'package:recipic/models/constants.dart';
 
@@ -18,6 +19,7 @@ class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
   bool showForgotPassword = false;
+  bool showRegisterPage = false;
 
   // text field state
   String email = '';
@@ -26,11 +28,14 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    if (loading && !showForgotPassword) {
+    if (loading && !showForgotPassword && !showRegisterPage) {
       return Loading();
     }
-    else if (!loading && showForgotPassword) {
+    else if (!loading && showForgotPassword && !showRegisterPage) {
       return ForgotPassword();
+    }
+    else if (!loading && !showForgotPassword && showRegisterPage) {
+      return Register();
     }
     else {
       return Scaffold(
@@ -44,7 +49,11 @@ class _SignInState extends State<SignIn> {
               icon: Icon(Icons.person),
               label: Text('Register'),
               onPressed: () {
-                widget.toggleView();
+                setState(() {
+                  loading = false;
+                  showForgotPassword = false;
+                  showRegisterPage = true;
+                });
               },
             ),
           ],
@@ -112,6 +121,7 @@ class _SignInState extends State<SignIn> {
                           setState(() {
                             loading = false;
                             showForgotPassword = true;
+                            showRegisterPage = false;
                           });
                         }
                     )
