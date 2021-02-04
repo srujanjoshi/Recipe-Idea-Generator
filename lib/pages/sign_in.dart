@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipic/pages/forgot_password.dart';
 import 'package:recipic/services/auth.dart';
 import 'package:recipic/models/constants.dart';
 
@@ -22,15 +23,7 @@ class _SignInState extends State<SignIn> {
   String password = '';
   String error = '';
 
-  RaisedButton forgotPasswordButton = RaisedButton(
-      child: Text(
-          "Forgot Password",
-          style: TextStyle(color: Colors.white)
-      ),
-      color: Colors.grey[800],
-      onPressed: () {},
-  );
-
+  
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : Scaffold(
@@ -96,7 +89,16 @@ class _SignInState extends State<SignIn> {
                     },
                   ),
                   SizedBox(width: 10),
-                  forgotPasswordButton
+                  RaisedButton(
+                      child: Text(
+                          "Forgot Password",
+                          style: TextStyle(color: Colors.white)
+                      ),
+                      color: Colors.grey[800],
+                      onPressed: () {
+                        setState(() {});
+                      }
+                  )
                 ],
               ),
               SizedBox(height: 12),
