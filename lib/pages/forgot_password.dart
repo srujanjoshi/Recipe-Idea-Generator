@@ -5,7 +5,7 @@ import 'package:recipic/models/constants.dart';
 class ForgotPassword extends StatefulWidget {
 
   final Function toggleView;
-  ForgotPassword({this.toggleView});
+  ForgotPassword({this.toggleView}); // constructor for ForgotPassword class
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
