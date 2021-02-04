@@ -19,8 +19,8 @@ class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
 
   // These three boolean variables determine which page is shown when this widget is rebuilt
-  bool loading = false;
-  bool showForgotPassword = false;
+  bool showLoadingPage = false;
+  bool showForgotPasswordPage = false;
   bool showRegisterPage = false;
 
   // text field state
@@ -30,13 +30,13 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    if (loading && !showForgotPassword && !showRegisterPage) {
+    if (showLoadingPage && !showForgotPasswordPage && !showRegisterPage) {
       return Loading();
     }
-    else if (!loading && showForgotPassword && !showRegisterPage) {
+    else if (!showLoadingPage && showForgotPasswordPage && !showRegisterPage) {
       return ForgotPassword();
     }
-    else if (!loading && !showForgotPassword && showRegisterPage) {
+    else if (!showLoadingPage && !showForgotPasswordPage && showRegisterPage) {
       return Register();
     }
     else {
@@ -53,8 +53,8 @@ class _SignInState extends State<SignIn> {
               onPressed: () {
                 setState(() {
                   // Rebuild the widget, now showing the register page
-                  loading = false;
-                  showForgotPassword = false;
+                  showLoadingPage = false;
+                  showForgotPasswordPage = false;
                   showRegisterPage = true;
                 });
               },
@@ -100,14 +100,14 @@ class _SignInState extends State<SignIn> {
                       ),
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
-                          setState(() => loading = true);
+                          setState(() => showLoadingPage = true);
                           dynamic result = await _auth
                               .signInWithEmailAndPassword(email, password);
                           if (result == null) {
                             setState(() {
                               error =
                               'could not sign in with those credentials';
-                              loading = false;
+                              showLoadingPage = false;
                             });
                           }
                         }
@@ -123,8 +123,8 @@ class _SignInState extends State<SignIn> {
                         onPressed: () {
                           setState(() {
                             // Rebuild the widget, now showing the forgot password page
-                            loading = false;
-                            showForgotPassword = true;
+                            showLoadingPage = false;
+                            showForgotPasswordPage = true;
                             showRegisterPage = false;
                           });
                         }

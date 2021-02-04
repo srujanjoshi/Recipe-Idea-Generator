@@ -16,8 +16,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
-  bool loading = false;
-  bool showSignIn = false;
+  bool showLoadingPage = false;
+  bool showSignInPage = false;
 
   // text field state
   String email = '';
@@ -26,10 +26,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   Widget build(BuildContext context) {
-    if (loading && !showSignIn) {
+    if (showLoadingPage && !showSignInPage) {
       return Loading();
     }
-    else if (!loading && showSignIn) {
+    else if (!showLoadingPage && showSignInPage) {
       return SignIn();
     }
     else {
@@ -45,8 +45,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               label: Text('Sign In'),
               onPressed: () {
                 setState(() {
-                  loading = false;
-                  showSignIn = true;
+                  showLoadingPage = false;
+                  showSignInPage = true;
                 });
               },
             ),

@@ -16,7 +16,7 @@ class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
-  bool loading = false;
+  bool showLoadingPage = false;
   bool showSignInPage = false;
 
   // text field state
@@ -26,10 +26,10 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    if (loading && !showSignInPage) {
+    if (showLoadingPage && !showSignInPage) {
       return Loading();
     }
-    else if (!loading && showSignInPage) {
+    else if (!showLoadingPage && showSignInPage) {
       return SignIn();
     }
     else {
@@ -45,7 +45,7 @@ class _RegisterState extends State<Register> {
               label: Text('Sign In'),
               onPressed: () {
                 setState(() {
-                  loading = false;
+                  showLoadingPage = false;
                   showSignInPage = true;
                 });
               },
@@ -84,12 +84,12 @@ class _RegisterState extends State<Register> {
                   ),
                   onPressed: () async {
                     if (_formKey.currentState.validate()){
-                      setState(() => loading = true);
+                      setState(() => showLoadingPage = true);
                       dynamic result = await _auth.registerWithEmailAndPassword(email, password);
                       if(result == null){
                         setState(() {
                           error = 'please supply a valid email';
-                          loading = false;
+                          showLoadingPage = false;
                         });
                       }
                     }
