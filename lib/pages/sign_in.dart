@@ -17,6 +17,8 @@ class _SignInState extends State<SignIn> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+
+  // These three boolean variables determine which page is shown when this widget is rebuilt
   bool loading = false;
   bool showForgotPassword = false;
   bool showRegisterPage = false;
@@ -50,6 +52,7 @@ class _SignInState extends State<SignIn> {
               label: Text('Register'),
               onPressed: () {
                 setState(() {
+                  // Rebuild the widget, now showing the register page
                   loading = false;
                   showForgotPassword = false;
                   showRegisterPage = true;
@@ -119,6 +122,7 @@ class _SignInState extends State<SignIn> {
                         color: Colors.grey[800],
                         onPressed: () {
                           setState(() {
+                            // Rebuild the widget, now showing the forgot password page
                             loading = false;
                             showForgotPassword = true;
                             showRegisterPage = false;
