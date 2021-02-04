@@ -17,6 +17,7 @@ class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
+  bool showForgotPassword = false;
 
   // text field state
   String email = '';
@@ -25,8 +26,11 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
+    if (loading && !showForgotPassword) {
       return Loading();
+    }
+    else if (!loading && showForgotPassword) {
+      return ForgotPassword();
     }
     else {
       return Scaffold(
@@ -105,7 +109,10 @@ class _SignInState extends State<SignIn> {
                         ),
                         color: Colors.grey[800],
                         onPressed: () {
-                          setState(() {});
+                          setState(() {
+                            loading = false;
+                            showForgotPassword = true;
+                          });
                         }
                     )
                   ],
