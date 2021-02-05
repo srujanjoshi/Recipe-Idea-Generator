@@ -25,6 +25,29 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   String password = '';
   String error = '';
 
+  void showInvalidEmailDialog(e) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: SingleChildScrollView(
+            child: Text(e.toString()),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (showLoadingPage && !showSignInPage) {
@@ -83,26 +106,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       } catch (e) {
                         // Show the exception in a dialog box
                         log(e.toString());
-                        showDialog<void>(
-                          context: context,
-                          barrierDismissible: false, // user must tap button!
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Error'),
-                              content: SingleChildScrollView(
-                                child: Text(e.toString()),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text('OK'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        showInvalidEmailDialog(e);
                       }
                     }
                   },
