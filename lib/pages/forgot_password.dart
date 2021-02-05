@@ -25,6 +25,29 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   String password = '';
   String error = '';
 
+  void showValidEmailDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Email Sent'),
+          content: SingleChildScrollView(
+            child: Text("We have sent you an email containing a link to reset your password."),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void showInvalidEmailDialog(e) {
     showDialog<void>(
       context: context,
@@ -103,6 +126,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                       try {
                         dynamic result = await _auth.sendPasswordResetEmail(email);
+                        showValidEmailDialog();
                       } catch (e) {
                         // Show the exception in a dialog box
                         log(e.toString());
