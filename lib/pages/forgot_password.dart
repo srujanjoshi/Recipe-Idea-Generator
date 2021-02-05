@@ -73,7 +73,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     'Send Password Reset Link',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      _formKey.currentState.save();
+                      dynamic result = await _auth.sendPasswordResetEmail(email);
+                    }
+                  },
                 ),
                 SizedBox(height: 12),
                 Text(
