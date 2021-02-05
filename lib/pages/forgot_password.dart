@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recipic/services/auth.dart';
 import 'package:recipic/models/constants.dart';
 import 'package:recipic/pages/sign_in.dart';
+import 'dart:developer';
 
 class ForgotPassword extends StatefulWidget {
 
@@ -76,7 +77,33 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      dynamic result = await _auth.sendPasswordResetEmail(email);
+
+                      try {
+                        dynamic result = await _auth.sendPasswordResetEmail(email);
+                      } catch (e) {
+                        // Show the exception in a dialog box
+                        log(e.toString());
+                        showDialog<void>(
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Error'),
+                              content: SingleChildScrollView(
+                                child: Text(e.toString()),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('OK'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                     }
                   },
                 ),
