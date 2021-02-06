@@ -18,11 +18,8 @@ class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
-  // These three boolean variables determine which page is shown when this widget is rebuilt
-  bool showLoadingPage = false;
-  bool showForgotPasswordPage = false;
-  bool showRegisterPage = false;
-  bool showHomePage = false;
+  // This variable determines which page is shown when this widget is rebuilt
+  String pageToShow = "Sign In";
 
   // text field state
   String email = '';
@@ -31,128 +28,116 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    if (showLoadingPage && !showForgotPasswordPage && !showRegisterPage && !showHomePage) {
-      return Loading();
-    }
-    else if (!showLoadingPage && showForgotPasswordPage && !showRegisterPage && !showHomePage) {
-      return ForgotPassword();
-    }
-    else if (!showLoadingPage && !showForgotPasswordPage && showRegisterPage && !showHomePage) {
-      return Register();
-    }
-    else if (!showLoadingPage && !showForgotPasswordPage && !showRegisterPage && showHomePage) {
-      return Home();
-    }
-    else {
-      return Scaffold(
-        backgroundColor: Colors.grey[350],
-        appBar: AppBar(
-          backgroundColor: Colors.grey[700],
-          elevation: 0.0,
-          title: Text('Sign In Page'),
-          actions: <Widget>[
-            FlatButton.icon(
-              icon: Icon(Icons.person),
-              label: Text('Register'),
-              onPressed: () {
-                setState(() {
-                  // Rebuild the widget, now showing the register page
-                  showLoadingPage = false;
-                  showForgotPasswordPage = false;
-                  showRegisterPage = true;
-                  showHomePage = false;
-                });
-              },
-            ),
-          ],
-        ),
-        body: Container(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 20),
-                TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Email'),
-                    validator: (val) => val.isEmpty ? 'Enter an email' : null,
-                    onChanged: (val) {
-                      setState(() => email = val);
-                    }
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                    decoration: textInputDecoration.copyWith(
-                        hintText: 'Password'),
-                    validator: (val) =>
-                    val.length < 6
-                        ? 'Enter a password 6+ chars long'
-                        : null,
-                    obscureText: true,
-                    onChanged: (val) {
-                      setState(() => password = val);
-                    }
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    RaisedButton(
-                      color: Colors.grey[800],
-                      child: Text(
-                        'Sign In',
-                        style: TextStyle(color: Colors.white),
+    switch (pageToShow) {
+      case "Loading":
+        return Loading();
+      case "Forgot Password":
+        return ForgotPassword();
+      case "Register":
+        return Register();
+      case "Home":
+        return Home();
+      default:
+        return Scaffold(
+          backgroundColor: Colors.grey[350],
+          appBar: AppBar(
+            backgroundColor: Colors.grey[700],
+            elevation: 0.0,
+            title: Text('Sign In Page'),
+            actions: <Widget>[
+              FlatButton.icon(
+                icon: Icon(Icons.person),
+                label: Text('Register'),
+                onPressed: () {
+                  setState(() {
+                    // Rebuild the widget, now showing the register page
+                    pageToShow = "Register";
+                  });
+                },
+              ),
+            ],
+          ),
+          body: Container(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  TextFormField(
+                      decoration: textInputDecoration.copyWith(
+                          hintText: 'Email'),
+                      validator: (val) => val.isEmpty ? 'Enter an email' : null,
+                      onChanged: (val) {
+                        setState(() => email = val);
+                      }
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                      decoration: textInputDecoration.copyWith(
+                          hintText: 'Password'),
+                      validator: (val) =>
+                      val.length < 6
+                          ? 'Enter a password 6+ chars long'
+                          : null,
+                      obscureText: true,
+                      onChanged: (val) {
+                        setState(() => password = val);
+                      }
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RaisedButton(
+                        color: Colors.grey[800],
+                        child: Text(
+                          'Sign In',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            setState(() => pageToShow = "Loading");
+                            dynamic result = await _auth
+                                .signInWithEmailAndPassword(email, password);
+                            if (result == null) {
+                              setState(() {
+                                error =
+                                'could not sign in with those credentials';
+                                //showLoadingPage = false;
+                              });
+                            } else {
+                              setState(() => pageToShow = "Home");
+                            }
+                          }
+                        },
                       ),
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          setState(() => showLoadingPage = true);
-                          dynamic result = await _auth
-                              .signInWithEmailAndPassword(email, password);
-                          if (result == null) {
+                      SizedBox(width: 10),
+                      RaisedButton(
+                          child: Text(
+                              "Forgot Password",
+                              style: TextStyle(color: Colors.white)
+                          ),
+                          color: Colors.grey[800],
+                          onPressed: () {
                             setState(() {
-                              error =
-                              'could not sign in with those credentials';
-                              showLoadingPage = false;
-                            });
-                          } else {
-                            setState(() {
-                              showLoadingPage = false;
-                              showForgotPasswordPage = false;
-                              showRegisterPage = false;
-                              showHomePage = true;
+                              // Rebuild the widget, now showing the forgot password page
+                              pageToShow = "Forgot Password";
                             });
                           }
-                        }
-                      },
-                    ),
-                    SizedBox(width: 10),
-                    RaisedButton(
-                        child: Text(
-                            "Forgot Password",
-                            style: TextStyle(color: Colors.white)
-                        ),
-                        color: Colors.grey[800],
-                        onPressed: () {
-                          setState(() {
-                            // Rebuild the widget, now showing the forgot password page
-                            showLoadingPage = false;
-                            showForgotPasswordPage = true;
-                            showRegisterPage = false;
-                          });
-                        }
-                    )
-                  ],
-                ),
-                SizedBox(height: 12),
-                Text(
-                  error,
-                  style: TextStyle(color: Colors.red, fontSize: 14),
-                ),
-              ],
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    error,
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
     }
   }
 }

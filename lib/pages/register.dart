@@ -15,8 +15,8 @@ class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
-  bool showLoadingPage = false;
-  bool showSignInPage = false;
+
+  String pageToShow = "";
 
   // text field state
   String email = '';
@@ -50,112 +50,109 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    if (showLoadingPage && !showSignInPage) {
-      return Loading();
-    }
-    else if (!showLoadingPage && showSignInPage) {
-      return SignIn();
-    }
-    else {
-      return Scaffold(
-        backgroundColor: Colors.grey[350],
-        appBar: AppBar(
-          backgroundColor: Colors.grey[700],
-          elevation: 0.0,
-          title: Text('Registration Page'),
-          actions: <Widget>[
-            FlatButton.icon(
-              icon: Icon(Icons.person),
-              label: Text('Sign In'),
-              onPressed: () {
-                setState(() {
-                  showLoadingPage = false;
-                  showSignInPage = true;
-                });
-              },
-            ),
-          ],
-        ),
-        body: Container(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 20),
-                TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Email'),
-                    validator: (val) {
-                      if (val.isEmpty)
-                        return 'Enter an email';
-                      else
-                        return null;
-                    },
-                    onChanged: (val) {
-                      setState(() => email = val);
-                    }
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Password'),
-                    validator: (val) {
-                      if (val.length < 6)
-                        return 'Enter a password 6+ chars long';
-                      else
-                        return null;
-                    },
-                    obscureText: true,
-                    onChanged: (val) {
-                      setState(() => password = val);
-                    }
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Confirm Password'),
-                    validator: (val) {
-                      if (val != password)
-                        return 'Passwords do not match';
-                      else
-                        return null;
-                    },
-                    obscureText: true,
-                ),
-                SizedBox(height: 20),
-                RaisedButton(
-                  color: Colors.grey[800],
-                  child: Text(
-                    'Register',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()){
-                      setState(() => showLoadingPage = true);
-                      dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-                      if (result == null){
-                        setState(() {
-                          error = 'please supply a valid email';
-                          showLoadingPage = false;
-                        });
-                      } else {
-                        setState(() {
-                          showLoadingPage = false;
-                          showSignInPage = true;
-                        });
-                        emailVerificationDialog();
+    switch (pageToShow) {
+      case "Loading":
+        return Loading();
+      case "Sign In":
+        return SignIn();
+      default:
+        return Scaffold(
+          backgroundColor: Colors.grey[350],
+          appBar: AppBar(
+            backgroundColor: Colors.grey[700],
+            elevation: 0.0,
+            title: Text('Registration Page'),
+            actions: <Widget>[
+              FlatButton.icon(
+                icon: Icon(Icons.person),
+                label: Text('Sign In'),
+                onPressed: () {
+                  setState(() {
+                    pageToShow = "Sign In";
+                  });
+                },
+              ),
+            ],
+          ),
+          body: Container(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  TextFormField(
+                      decoration: textInputDecoration.copyWith(hintText: 'Email'),
+                      validator: (val) {
+                        if (val.isEmpty)
+                          return 'Enter an email';
+                        else
+                          return null;
+                      },
+                      onChanged: (val) {
+                        setState(() => email = val);
                       }
-                    }
-                  },
-                ),
-                SizedBox(height: 12),
-                Text(
-                  error,
-                  style: TextStyle(color: Colors.red, fontSize: 14),
-                ),
-              ],
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                      decoration: textInputDecoration.copyWith(hintText: 'Password'),
+                      validator: (val) {
+                        if (val.length < 6)
+                          return 'Enter a password 6+ chars long';
+                        else
+                          return null;
+                      },
+                      obscureText: true,
+                      onChanged: (val) {
+                        setState(() => password = val);
+                      }
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                      decoration: textInputDecoration.copyWith(hintText: 'Confirm Password'),
+                      validator: (val) {
+                        if (val != password)
+                          return 'Passwords do not match';
+                        else
+                          return null;
+                      },
+                      obscureText: true,
+                  ),
+                  SizedBox(height: 20),
+                  RaisedButton(
+                    color: Colors.grey[800],
+                    child: Text(
+                      'Register',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()){
+                        setState(() => pageToShow = "Loading");
+                        dynamic result = await _auth.registerWithEmailAndPassword(email, password);
+                        if (result == null){
+                          setState(() {
+                            error = 'please supply a valid email';
+                            pageToShow = "";
+                          });
+                        } else {
+                          setState(() {
+                            pageToShow = "Sign In";
+                          });
+                          emailVerificationDialog();
+                        }
+                      }
+                    },
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    error,
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
     }
   }
 }
