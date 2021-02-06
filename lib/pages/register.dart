@@ -23,6 +23,31 @@ class _RegisterState extends State<Register> {
   String password = '';
   String error = '';
 
+  void emailVerificationDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Email Sent'),
+          content: SingleChildScrollView(
+            child: Text("We have sent you an email containing a link to "
+                "verify your email address. You must verify your email "
+                "address before you can sign in."),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (showLoadingPage && !showSignInPage) {
@@ -106,11 +131,13 @@ class _RegisterState extends State<Register> {
                     if (_formKey.currentState.validate()){
                       setState(() => showLoadingPage = true);
                       dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-                      if(result == null){
+                      if (result == null){
                         setState(() {
                           error = 'please supply a valid email';
                           showLoadingPage = false;
                         });
+                      } else {
+                        emailVerificationDialog();
                       }
                     }
                   },
