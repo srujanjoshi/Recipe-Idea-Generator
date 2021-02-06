@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recipic/models/user.dart';
 
@@ -52,8 +53,8 @@ class AuthService {
       // create new user document in database, here
 
       return _userFromFirebaseUser(user);
-    }catch(e){
-      print(e.toString());
+    } catch(e){
+      log(e.toString());
       return null;
     }
   }
