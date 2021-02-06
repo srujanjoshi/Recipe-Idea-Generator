@@ -47,6 +47,8 @@ class AuthService {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
 
+      user.sendEmailVerification();
+
       // create new user document in database, here
 
       return _userFromFirebaseUser(user);
