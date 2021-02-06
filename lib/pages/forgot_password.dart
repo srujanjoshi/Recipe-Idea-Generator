@@ -6,8 +6,7 @@ import 'dart:developer';
 
 class ForgotPassword extends StatefulWidget {
 
-  final Function toggleView;
-  ForgotPassword({this.toggleView}); // constructor for ForgotPassword class
+  ForgotPassword(); // constructor for ForgotPassword class
 
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
