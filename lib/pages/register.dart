@@ -5,8 +5,7 @@ import 'package:recipic/models/constants.dart';
 
 class Register extends StatefulWidget {
 
-  final Function toggleView;
-  Register({this.toggleView}); // constructor for Register class
+  Register(); // constructor for Register class
 
   @override
   _RegisterState createState() => _RegisterState();
