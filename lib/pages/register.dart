@@ -5,8 +5,7 @@ import 'package:recipic/models/constants.dart';
 
 class Register extends StatefulWidget {
 
-  final Function toggleView;
-  Register({this.toggleView}); // constructor for Register class
+  Register(); // constructor for Register class
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -23,6 +22,31 @@ class _RegisterState extends State<Register> {
   String email = '';
   String password = '';
   String error = '';
+
+  void emailVerificationDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Email Sent'),
+          content: SingleChildScrollView(
+            child: Text("We have sent you an email containing a link to "
+                "verify your email address. You must verify your email "
+                "address before you can sign in."),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,19 +85,40 @@ class _RegisterState extends State<Register> {
                 SizedBox(height: 20),
                 TextFormField(
                     decoration: textInputDecoration.copyWith(hintText: 'Email'),
-                    validator: (val) => val.isEmpty ? 'Enter an email' : null,
-                    onChanged: (val){
+                    validator: (val) {
+                      if (val.isEmpty)
+                        return 'Enter an email';
+                      else
+                        return null;
+                    },
+                    onChanged: (val) {
                       setState(() => email = val);
                     }
                 ),
                 SizedBox(height: 20),
                 TextFormField(
                     decoration: textInputDecoration.copyWith(hintText: 'Password'),
-                    validator: (val) => val.length < 6 ? 'Enter a password 6+ chars long' : null,
+                    validator: (val) {
+                      if (val.length < 6)
+                        return 'Enter a password 6+ chars long';
+                      else
+                        return null;
+                    },
                     obscureText: true,
                     onChanged: (val) {
                       setState(() => password = val);
                     }
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                    decoration: textInputDecoration.copyWith(hintText: 'Confirm Password'),
+                    validator: (val) {
+                      if (val != password)
+                        return 'Passwords do not match';
+                      else
+                        return null;
+                    },
+                    obscureText: true,
                 ),
                 SizedBox(height: 20),
                 RaisedButton(
@@ -86,11 +131,13 @@ class _RegisterState extends State<Register> {
                     if (_formKey.currentState.validate()){
                       setState(() => showLoadingPage = true);
                       dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-                      if(result == null){
+                      if (result == null){
                         setState(() {
                           error = 'please supply a valid email';
                           showLoadingPage = false;
                         });
+                      } else {
+                        emailVerificationDialog();
                       }
                     }
                   },

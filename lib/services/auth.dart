@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recipic/models/user.dart';
 
@@ -7,7 +8,11 @@ class AuthService {
 
   // create user obj based on FirebaseUser
   User _userFromFirebaseUser(FirebaseUser user) {
-    return user != null ? User(uid: user.uid) : null;
+    if (user != null) {
+      return User(uid: user.uid);
+    } else {
+      return null;
+    }
   }
 
   // auth change user stream
@@ -47,11 +52,13 @@ class AuthService {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
 
+      user.sendEmailVerification();
+
       // create new user document in database, here
 
       return _userFromFirebaseUser(user);
-    }catch(e){
-      print(e.toString());
+    } catch(e){
+      log(e.toString());
       return null;
     }
   }
