@@ -137,6 +137,10 @@ class _RegisterState extends State<Register> {
                           showLoadingPage = false;
                         });
                       } else {
+                        setState(() {
+                          showLoadingPage = false;
+                          showSignInPage = true;
+                        });
                         emailVerificationDialog();
                       }
                     }

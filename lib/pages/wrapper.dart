@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:recipic/models/user.dart';
 import 'package:recipic/pages/authenticate.dart';
 import 'package:recipic/pages/home.dart';
+import 'package:recipic/pages/sign_in.dart';
 
 class Wrapper extends StatelessWidget {
   @override
@@ -14,7 +15,7 @@ class Wrapper extends StatelessWidget {
     if (user == null){
       return Authenticate();
     } else {
-      return Home();
+      return SignIn();
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipic/pages/forgot_password.dart';
 import 'package:recipic/pages/register.dart';
+import 'package:recipic/pages/home.dart';
 import 'package:recipic/services/auth.dart';
 import 'package:recipic/models/constants.dart';
 
@@ -21,6 +22,7 @@ class _SignInState extends State<SignIn> {
   bool showLoadingPage = false;
   bool showForgotPasswordPage = false;
   bool showRegisterPage = false;
+  bool showHomePage = false;
 
   // text field state
   String email = '';
@@ -29,14 +31,17 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    if (showLoadingPage && !showForgotPasswordPage && !showRegisterPage) {
+    if (showLoadingPage && !showForgotPasswordPage && !showRegisterPage && !showHomePage) {
       return Loading();
     }
-    else if (!showLoadingPage && showForgotPasswordPage && !showRegisterPage) {
+    else if (!showLoadingPage && showForgotPasswordPage && !showRegisterPage && !showHomePage) {
       return ForgotPassword();
     }
-    else if (!showLoadingPage && !showForgotPasswordPage && showRegisterPage) {
+    else if (!showLoadingPage && !showForgotPasswordPage && showRegisterPage && !showHomePage) {
       return Register();
+    }
+    else if (!showLoadingPage && !showForgotPasswordPage && !showRegisterPage && showHomePage) {
+      return Home();
     }
     else {
       return Scaffold(
@@ -55,6 +60,7 @@ class _SignInState extends State<SignIn> {
                   showLoadingPage = false;
                   showForgotPasswordPage = false;
                   showRegisterPage = true;
+                  showHomePage = false;
                 });
               },
             ),
@@ -107,6 +113,13 @@ class _SignInState extends State<SignIn> {
                               error =
                               'could not sign in with those credentials';
                               showLoadingPage = false;
+                            });
+                          } else {
+                            setState(() {
+                              showLoadingPage = false;
+                              showForgotPasswordPage = false;
+                              showRegisterPage = false;
+                              showHomePage = true;
                             });
                           }
                         }
