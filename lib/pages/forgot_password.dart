@@ -20,7 +20,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   // text field state
   String email = '';
-  String password = '';
   String error = '';
 
   void showValidEmailDialog() {
